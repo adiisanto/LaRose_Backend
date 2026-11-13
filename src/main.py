@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.core.config import settings
 from src.core.exceptions import register_exception_handlers
 from src.core.pagination import APIResponse
+from src.modules.iam.router import router as iam_router
 
 
 @asynccontextmanager
@@ -41,6 +42,9 @@ def create_app() -> FastAPI:
 
     # Exception Handlers
     register_exception_handlers(app)
+
+    # API Routers
+    app.include_router(iam_router, prefix=settings.API_V1_PREFIX)
 
     # Health Check Endpoint
     @app.get("/healthz", tags=["Health"], response_model=APIResponse[dict])
