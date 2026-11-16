@@ -153,6 +153,35 @@ class InventoryService:
                 inv.quantity_reserved = max(0, inv.quantity_reserved - qty_to_release)
                 inv.updated_at = now
 
+    async def disassemble_stock_atomic(
+        self,
+        requirements: dict[UUID, int],
+        reference_id: str,
+        user_id: UUID | None = None,
+    ) -> None:
+        """Return assembled bouquet components back into physical single item inventory."""
+        if not requirements:
+            return
+
+        sorted_ids = sorted(requirements.keys())
+        locked_inventories = await self._inv_repo.get_locked_inventories(sorted_ids)
+        now = datetime.now(UTC)
+        for inv in locked_inventories:
+            qty_to_return = requirements.get(inv.product_id, 0)
+            if qty_to_return > 0:
+                inv.quantity_on_hand += qty_to_return
+                inv.updated_at = now
+
+                movement = StockMovement(
+                    inventory_id=inv.id,
+                    movement_type=MovementType.DISASSEMBLY_RETURN,
+                    delta_quantity=qty_to_return,
+                    reference_id=reference_id,
+                    notes="Returned to inventory via full bouquet disassembly",
+                    created_by_user_id=user_id,
+                )
+                await self._inv_repo.record_movement(movement)
+
     async def get_by_product_id(self, product_id: UUID) -> InventoryResponse:
         """Retrieve inventory record by product UUID."""
         inv = await self._inv_repo.get_by_product_id(product_id)
