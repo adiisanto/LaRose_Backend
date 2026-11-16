@@ -10,6 +10,8 @@ from src.core.config import settings
 from src.core.database import Base
 from src.modules.catalog.models import BOMComponent, Product  # noqa: F401
 from src.modules.iam.models import User  # noqa: F401
+from src.modules.inventory.models import Inventory, StockMovement  # noqa: F401
+from src.modules.orders.models import AssemblyTask, Order, OrderItem  # noqa: F401
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
