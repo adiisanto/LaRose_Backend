@@ -12,6 +12,7 @@ from src.modules.catalog.router import router as catalog_router
 from src.modules.iam.router import router as iam_router
 from src.modules.inventory.router import router as inventory_router
 from src.modules.orders.router import router as orders_router
+from src.modules.reports.router import router as reports_router
 
 
 @asynccontextmanager
@@ -53,6 +54,7 @@ def create_app() -> FastAPI:
     app.include_router(inventory_router, prefix=settings.API_V1_PREFIX)
     app.include_router(orders_router, prefix=settings.API_V1_PREFIX)
     app.include_router(assembly_router, prefix=settings.API_V1_PREFIX)
+    app.include_router(reports_router, prefix=settings.API_V1_PREFIX)
 
     # Health Check Endpoint
     @app.get("/healthz", tags=["Health"], response_model=APIResponse[dict])

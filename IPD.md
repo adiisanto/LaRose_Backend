@@ -152,6 +152,6 @@ Setiap tahapan modul dinyatakan **SELESAI (Done)** hanya jika telah memenuhi che
 | **Catalog & BOM** | - CRUD produk bunga satuan & buket berjalan dengan validasi skema Pydantic v2.<br>- Komposisi resep BOM tersimpan dengan relasi foreign key dan validasi anti-looping. | [x] |
 | **Inventory & Concurrency** | - Transaksi order mengeksekusi `SELECT ... FOR UPDATE` terurut tanpa deadlock.<br>- Overselling tercegah secara mutlak; mutasi tercatat rapi di tabel `stock_movements`. | [x] |
 | **Assembly & Ops** | - Antrean Staff Packing tersortir otomatis berdasarkan `delivery_date ASC`.<br>- Alur pelaporan scrap dan pembatalan pesanan (pembongkaran buket ke stok satuan) tervalidasi. | [x] |
-| **Reports** | - Kueri agregasi omzet dan valuasi aset gudang tereksekusi $< 100\text{ ms}$. | [ ] |
+| **Reports** | - Kueri agregasi omzet dan valuasi aset gudang tereksekusi $< 100\text{ ms}$. | [x] |
 | **Database Governance** | - Tidak ada modifikasi skema tabel atau penghapusan data tanpa persetujuan eksplisit USER.<br>- Setiap migrasi skema bersifat non-destruktif dan menjaga seluruh data eksisting (zero data loss). | [ ] |
 | **Quality & Deploy** | - Lolos pemeriksaan linting `ruff check .` tanpa error.<br>- Seluruh unit & integration test Pytest berstatus hijau (100% pass).<br>- Berhasil dideploy dan merespons `200 OK` pada endpoint `/healthz` di Koyeb. | [ ] |
