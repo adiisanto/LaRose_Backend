@@ -207,16 +207,24 @@ class OrderService:
                 message=f"Order with status '{order.status}' cannot be cancelled.",
             )
 
-        # Expand BOM to release reserved material stock
+        # Expand BOM to calculate component materials
         products_by_id = {item.product.id: item.product for item in order.items}
         material_requirements = self._expand_material_requirements(order.items, products_by_id)
 
-        # Release stock reservation
-        await self._inv_service.release_stock_atomic(
-            requirements=material_requirements,
-            reference_id=order.order_number,
-            user_id=user_id,
-        )
+        if order.status == OrderStatus.READY_FOR_DELIVERY:
+            # Physical items were deducted during finish_assembly -> return them via disassembly
+            await self._inv_service.disassemble_stock_atomic(
+                requirements=material_requirements,
+                reference_id=order.order_number,
+                user_id=user_id,
+            )
+        else:
+            # Order was PENDING_PAYMENT, PAID, or PROCESSING -> release reservation
+            await self._inv_service.release_stock_atomic(
+                requirements=material_requirements,
+                reference_id=order.order_number,
+                user_id=user_id,
+            )
 
         order.status = OrderStatus.CANCELLED
         await self._order_repo.update_order(order)

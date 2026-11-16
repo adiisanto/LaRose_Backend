@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.core.config import settings
 from src.core.exceptions import register_exception_handlers
 from src.core.pagination import APIResponse
+from src.modules.assembly.router import router as assembly_router
 from src.modules.catalog.router import router as catalog_router
 from src.modules.iam.router import router as iam_router
 from src.modules.inventory.router import router as inventory_router
@@ -51,6 +52,7 @@ def create_app() -> FastAPI:
     app.include_router(catalog_router, prefix=settings.API_V1_PREFIX)
     app.include_router(inventory_router, prefix=settings.API_V1_PREFIX)
     app.include_router(orders_router, prefix=settings.API_V1_PREFIX)
+    app.include_router(assembly_router, prefix=settings.API_V1_PREFIX)
 
     # Health Check Endpoint
     @app.get("/healthz", tags=["Health"], response_model=APIResponse[dict])
